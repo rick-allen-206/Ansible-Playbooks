@@ -1,0 +1,661 @@
+---
+- name: "PLAY 1: Gather NXOS Facts"
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  hosts: nxos_boi:nxos_las
+  tasks:
+
+  - name: "TASK 1: NXOS >> GATHER FACTS FROM DEVICES"
+    vars:
+      ansible_command_timeout: 300
+    cisco.nxos.nxos_facts:
+      gather_subset:
+      - '!config'
+
+- name: "PLAY 2: Create Cloud ACLs"
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  hosts: nxos_boi:nxos_las
+  tasks:
+
+  - name: "TASK 2: NXOS >> CREATE ACL"
+    register: acls
+    cisco.nxos.nxos_acls:
+      state: replaced
+      config:
+      - afi: ipv4
+        acls:
+        - name: GCP_ACCESS_ACL
+          aces:
+
+          
+          - grant: permit
+            sequence: 10
+            protocol: ip
+            source:
+              prefix: x.x.x.x/14
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 20
+            protocol: ip
+            source:
+              prefix: x.x.x.x/14
+            destination:
+              prefix: x.x.x.x/16
+          
+          
+          - grant: permit
+            sequence: 30
+            protocol: ip
+            source:
+              prefix: x.x.x.x/22
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 40
+            protocol: ip
+            source:
+              prefix: x.x.x.x/22
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 50
+            protocol: ip
+            source:
+              prefix: x.x.x.x/18
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 60
+            protocol: ip
+            source:
+              prefix: x.x.x.x/18
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 70
+            protocol: ip
+            source:
+              prefix: x.x.x.x/18
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 80
+            protocol: ip
+            source:
+              prefix: x.x.x.x/18
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 90
+            protocol: ip
+            source:
+              prefix: x.x.x.x/18
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 100
+            protocol: ip
+            source:
+              prefix: x.x.x.x/18
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 110
+            protocol: ip
+            source:
+              prefix: x.x.x.x/18
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 120
+            protocol: ip
+            source:
+              prefix: x.x.x.x/18
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 130
+            protocol: ip
+            source:
+              prefix: x.x.x.x/22
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 140
+            protocol: ip
+            source:
+              prefix: x.x.x.x/22
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 150
+            protocol: ip
+            source:
+              prefix: x.x.x.x/18
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 160
+            protocol: ip
+            source:
+              prefix: x.x.x.x/18
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 170
+            protocol: ip
+            source:
+              prefix: x.x.x.x/22
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 180
+            protocol: ip
+            source:
+              prefix: x.x.x.x/22
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 190
+            protocol: ip
+            source:
+              prefix: x.x.x.x/20
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 200
+            protocol: ip
+            source:
+              prefix: x.x.x.x/20
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 210
+            protocol: ip
+            source:
+              prefix: x.x.x.x/18
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 220
+            protocol: ip
+            source:
+              prefix: x.x.x.x/18
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 230
+            protocol: ip
+            source:
+              prefix: x.x.x.x/22
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 240
+            protocol: ip
+            source:
+              prefix: x.x.x.x/22
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 250
+            protocol: ip
+            source:
+              prefix: x.x.x.x/18
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 260
+            protocol: ip
+            source:
+              prefix: x.x.x.x/18
+            destination:
+              prefix: x.x.x.x/16
+        
+          
+          
+          
+
+          
+          
+          - grant: permit
+            sequence: 600
+            protocol: ip
+            source:
+              prefix: x.x.x.x/12
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 610
+            protocol: ip
+            source:
+              prefix: x.x.x.x/12
+            destination:
+              prefix: x.x.x.x/16
+
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+        - name: AWS_ACCESS_ACL
+          aces:
+          
+          
+          
+
+          - grant: permit
+            sequence: 10
+            protocol: ip
+            source:
+              prefix: x.x.x.x/22
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 20
+            protocol: ip
+            source:
+              prefix: x.x.x.x/22
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 30
+            protocol: ip
+            source:
+              prefix: x.x.x.x/22
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 40
+            protocol: ip
+            source:
+              prefix: x.x.x.x/22
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 50
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 60
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 70
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 80
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 90
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 100
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 110
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 120
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 130
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 140
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 150
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 160
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 170
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 180
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 190
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 200
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 210
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 220
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 230
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 240
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 250
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 260
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 270
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 280
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 290
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 300
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 310
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 320
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 330
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 340
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 350
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 360
+            protocol: ip
+            source:
+              prefix: x.x.x.x/24
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 370
+            protocol: ip
+            source:
+              prefix: x.x.x.x/21
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 380
+            protocol: ip
+            source:
+              prefix: x.x.x.x/21
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 390
+            protocol: ip
+            source:
+              prefix: x.x.x.x/21
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 400
+            protocol: ip
+            source:
+              prefix: x.x.x.x/21
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 410
+            protocol: ip
+            source:
+              prefix: x.x.x.x/21
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 420
+            protocol: ip
+            source:
+              prefix: x.x.x.x/21
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 430
+            protocol: ip
+            source:
+              prefix: x.x.x.x/21
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 440
+            protocol: ip
+            source:
+              prefix: x.x.x.x/21
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 450
+            protocol: ip
+            source:
+              prefix: x.x.x.x/19
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 460
+            protocol: ip
+            source:
+              prefix: x.x.x.x/19
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 470
+            protocol: ip
+            source:
+              prefix: x.x.x.x/21
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 480
+            protocol: ip
+            source:
+              prefix: x.x.x.x/21
+            destination:
+              prefix: x.x.x.x/16
+          
+          
+          
+          
+          - grant: permit
+            sequence: 600
+            protocol: ip
+            source:
+              prefix: x.x.x.x/12
+            destination:
+              prefix: x.x.x.x/16
+          - grant: permit
+            sequence: 610
+            protocol: ip
+            source:
+              prefix: x.x.x.x/12
+            destination:
+              prefix: x.x.x.x/16
+
+  - name: "ACL CREATION COMMANDS FIRED"
+    debug:
+      var: acls.commands
+
+- name: "PLAY 3:  Interface Configuration"
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  hosts: nxos_boi
+  tasks:
+  
+  - name: "TASK 1:  Core Switch 1 >> Attach ACL"
+    register: interfaces
+    cisco.nxos.nxos_acl_interfaces:
+      config:
+      - name: Ethernet1/35
+        access_groups:
+        - afi: ipv4
+          acls:
+          - name: Cloud_ACL
+            direction: in 
+  - name: "DATACENTER INTERFACE COMMANDS"
+    debug:
+      var: interfaces.commands
+
+- name: "PLAY 4: Interface Configuration"
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  hosts: nxos_las
+  tasks: 
+  
+  - name: "TASK 1: Core Switch 1 >> Attach ACL"
+    register: interfaces
+    cisco.nxos.nxos_acl_interfaces:
+      config:
+      - name: Ethernet1/35
+        access_groups:
+        - afi: ipv4
+          acls:
+          - name: Cloud_ACL
+            direction: in
+      
+  - name: "DATACENTER INTERFACE COMMANDS FIRED"
+    debug:
+      var: interfaces.commands 

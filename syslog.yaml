@@ -1,0 +1,116 @@
+---
+- name: "PLAY 1: Gather IOS Facts"
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  hosts: all
+  tasks:
+
+  - name: "TASK 1: IOS >> GATHER FACTS FROM DEVICES"
+    when: inventory_hostname in groups['ios']
+    vars:
+      ansible_command_timeout: 300
+    cisco.ios.ios_facts:
+      gather_subset:
+      - '!config'
+  
+  - name: "TASK 2: NXOS >> GATHER FACTS FROM DEVICES"
+    when: inventory_hostname in groups['nxos']
+    vars:
+      ansible_command_timeout: 300
+    cisco.nxos.nxos_facts:
+      gather_subset:
+      - '!config'
+
+
+
+- name: "PLAY 2: Set Syslog - IOS"
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  hosts: ios_hq
+  tags: ios
+  tasks:
+
+  - name: "TASK 1: IOS >> CREATE SYSLOG CONFIGURATION"
+    register: syslog
+    cisco.ios.ios_logging_global:
+      state: overridden
+      config:
+        hosts:
+          - hostname: x.x.x.x
+          - hostname: x.x.x.x
+        console:
+          severity: critical
+        monitor:
+          severity: critical
+
+  - name: "COMMANDS FIRED"
+    debug:
+      var: syslog.commands 
+
+
+
+- name: "PLAY 3: Set syslog - NXOS (HQ)"
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  hosts: nxos_hq
+  tags: hq
+  tasks:
+
+  - name: "TASK 1: NXOS >> CREATE SYSLOG CONFIGURATION"
+    register: syslog
+    cisco.nxos.nxos_logging_global:
+      state: overridden
+      config:
+        source_interface: Vlan101
+        hosts:
+          - host: x.x.x.x
+          - host: x.x.x.x
+        console:
+          severity: critical
+        monitor:
+          severity: critical
+        facilities:
+          - facility: tacacs
+            severity: debugging
+  
+  - name: "COMMANDS FIRED"
+    debug:
+      var: syslog.commands
+
+
+
+- name: "PLAY 4: Set syslog - NXOS (BOI LAS)"
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  hosts: nxos_boi:nxos_las
+  tags: boi-las
+  tasks:
+
+  - name: "TASK 1: NXOS >> CREATE SYSLOG CONFIGURATION"
+    register: syslog
+    cisco.nxos.nxos_logging_global:
+      state: overridden
+      config:
+        source_interface: Vlan102
+        hosts:
+          - host: x.x.x.x
+          - host: x.x.x.x
+        console:
+          severity: critical
+        monitor:
+          severity: critical
+        facilities:
+          - facility: tacacs
+            severity: debugging
+
+  - name: "COMMANDS FIRED"
+    debug:
+      var: syslog.commands

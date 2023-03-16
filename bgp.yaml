@@ -1,0 +1,188 @@
+---
+- name: "PLAY 1: Gather NXOS Facts"
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  hosts: "hq-core-n9k-01"
+  tasks:
+
+  - name: "TASK 1: NXOS >> GATHER FACTS FROM DEVICES"
+    vars:
+      ansible_command_timeout: 300
+    cisco.nxos.nxos_facts:
+      gather_subset:
+      - '!config'
+
+- name: "TASK 2: NXOS >> CREATE PREFIX LIST"
+  register: prefixes
+  cisco.nxos.nxos_prefix_lists:
+    state: replaced
+    config:
+    - afi: ipv4
+      prefix_lists:
+
+      - name: PREFIX_PRD_DATACENTERS
+        description: Allows Prod Datacenters
+        entries: 
+        - sequence: 10
+          action: permit
+          prefix: x.x.x.x/16
+        - sequence: 20
+          action: permit 
+          prefix: x.x.x.x/16
+      
+      - name: PREFIX_NONPRD_DATACENTERS
+        description: Allows Non-Prod Datacenters
+        entries: 
+        - sequence: 10
+          action: permit
+          prefix: x.x.x.x/16
+
+      - name: PREFIX_OFFICES
+        description: Allows Offices
+        entries:
+        - sequence: 10
+          action: permit
+          prefix: x.x.x.x/21 
+        - sequence: 20
+          action: permit
+          prefix: x.x.x.x/23 
+        - sequence: 30
+          action: permit
+          prefix: x.x.x.x/16 
+        - sequence: 40
+          action: permit
+          prefix: x.x.x.x/16 
+        - sequence: 50
+          action: permit
+          prefix: x.x.x.x/16 
+        - sequence: 60
+          action: permit
+          prefix: x.x.x.x/18 
+        - sequence: 70
+          action: permit
+          prefix: x.x.x.x/17 
+        - sequence: 80
+          action: permit
+          prefix: x.x.x.x/19 
+
+      - name: PREFIX_VPN
+        description: Allows Non-Prod Datacenters
+        entries: 
+        - sequence: 10
+          action: permit
+          prefix: x.x.x.x/18
+
+      - name: PREFIX_VENDOR_VPN
+        description: Allows Vendor VPN
+        entries: 
+        - sequence: 10
+          action: permit
+          prefix: x.x.x.x/24
+
+      - name: PREFIX_AZURE
+        description: Allows Azure
+        entries: 
+        - sequence: 10
+          action: permit
+          prefix: x.x.x.x/23 
+        - sequence: 20
+          action: permit
+          prefix: x.x.x.x/23 
+        - sequence: 30
+          action: permit
+          prefix: x.x.x.x/18 
+
+      - name: PREFIX_GCP_PROD
+        description: Allows ROUTES TO GCP PROD
+        entries: 
+        - sequence: 10
+          action: permit
+          prefix: x.x.x.x/16 
+        - sequence: 20
+          action: permit
+          prefix: x.x.x.x/21 
+
+      - name: PREFIX_GCP_NON-PROD
+        description: Allows ROUTES TO GCP NON-PROD
+        entries: 
+        - sequence: 10
+          action: permit
+          prefix: x.x.x.x/21 
+        - sequence: 20
+          action: permit
+          prefix: x.x.x.x/16 
+        - sequence: 30
+          action: permit
+          prefix: x.x.x.x/16 
+      
+      - name: PREFIX_AWS_PROD
+        description: Allows AWS
+        entries: 
+        - sequence: 10
+          action: permit
+          prefix: x.x.x.x/14 
+        - sequence: 20
+          action: permit
+          prefix: x.x.x.x/12 
+        - sequence: 30
+          action: permit
+          prefix: x.x.x.x/25 
+
+      - name: PREFIX_AWS_PROD
+        description: Allows AWS
+        entries: 
+        - sequence: 10
+          action: permit
+          prefix: x.x.x.x/14 
+        - sequence: 20
+          action: permit
+          prefix: x.x.x.x/14 
+        - sequence: 30
+          action: permit
+          prefix: x.x.x.x/20 
+        - sequence: 40
+          action: permit
+          prefix: x.x.x.x/20 
+
+- name: "TASK 2: NXOS >> CREATE ROUTE-MAPS"
+  register: prefixes
+  cisco.nxos.nxos_route_maps:
+    state: replaced
+    config:
+    - route_map: RM_GCP_PROD
+    - route_map: RM_GCP_NON-PROD
+    - route_map: RM_AWS_PROD
+    - route_map: RM_AWS_NON-PROD
+
+- name: "PLAY 3: Configure Datacenter"
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  hosts: "hq-core-n9k-01"
+  tasks:
+
+  - name: "TASK 1: NXOS >> CONFIGURE BGP"
+    vars:
+      ansible_command_timeout: 300
+    cisco.nxos.nxos_bgp_global:
+      config:
+        as_number: 64600
+        
+        neighbors:
+          - neighbor_address: x.x.x.x
+    state: replaced
+
+  - name: "TASK 2: NXOS >> CONFIGURE BGP NETWORK ADVERTISEMENTS"
+    cisco.nxos.nxos_bgp_neighbor_address_family:
+      config:
+        as_number: 64600
+        address_family:
+          - afi: ipv4
+            networks:
+              - prefix:
+              - prefix:
+              - prefix:  
+

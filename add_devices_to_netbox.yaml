@@ -1,0 +1,90 @@
+---
+- name: "PLAY 1: NXOS Devices"
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  hosts: nxos
+  tasks:
+
+  - name: "TASK 1: NXOS >> GATHER FACTS FROM DEVICES"
+    vars:
+      ansible_command_timeout: 300
+    cisco.nxos.nxos_facts:
+      gather_subset:
+      - '!config'
+
+  - name: "TASK 2: NXOS >> ADD DEVICE TO NETBOX"
+    netbox.netbox.netbox_device:
+      netbox_url: "https://example.com"
+      netbox_token: "<example token>"
+      validate_certs: no
+      data:
+        name: "{{ ansible_facts['net_hostname'] }}"
+        device_role: "Core Switch"
+        device_type: "{{ ansible_facts['net_model'] }}"
+        site: "{{ inventory_site }}"
+        platform: NXOS
+        serial: "{{ ansible_facts['net_serialnum'] }}"
+
+  - name: "TASK 3: NXOS >> ADD INTERFACES TO NETBOX"
+    netbox.netbox.netbox_device_interface:
+      netbox_url: "https://example.com"
+      netbox_token: "<example token>"
+      validate_certs: no
+      data:
+        device: "{{ ansible_facts['net_hostname'] }}"
+        name: "{{ item.key }}"
+        type: "Other"
+        # mac_address: "{{ item.value.macaddress | hwaddr('linux') }}"
+    with_dict: "{{ ansible_facts['net_interfaces'] }}"
+    loop_control:
+      label: "{{ item.key }}"
+  
+  # - debug:
+  #     msg: "Interface name: {{ item.key }}"
+  #   with_dict: "{{ ansible_facts['net_interfaces'] }}"
+  
+  # - local_action: copy content={{ ansible_facts['net_interfaces'] }} dest=./testvar.txt
+
+- name: "PLAY 2: IOS Devices"
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  hosts: ios
+  tasks:
+
+  - name: "TASK 1: IOS >> GATHER FACTS FROM DEVICES"
+    vars:
+      ansible_command_timeout: 300
+    cisco.ios.ios_facts:
+      gather_subset:
+      - '!config'
+
+  - name: "TASK 2: IOS >> ADD DEVICE TO NETBOX"
+    netbox.netbox.netbox_device:
+      netbox_url: "https://example.com"
+      netbox_token: "<example token>"
+      validate_certs: no
+      data:
+        name: "{{ ansible_facts['net_hostname'] }}"
+        device_role: "Access Switch"
+        device_type: "{{ ansible_facts['net_model'] }}"
+        site: "{{ inventory_site }}"
+        platform: IOS
+        serial: "{{ ansible_facts['net_serialnum'] }}"
+
+  - name: "TASK 3: IOS >> ADD INTERFACES TO NETBOX"
+    netbox.netbox.netbox_device_interface:
+      netbox_url: "https://example.com"
+      netbox_token: "<example token>"
+      validate_certs: no
+      data:
+        device: "{{ ansible_facts['net_hostname'] }}"
+        name: "{{ item.key }}"
+        type: "Other"
+        # mac_address: "{{ item.value.macaddress | hwaddr('linux') }}"
+    with_dict: "{{ ansible_facts['net_interfaces'] }}"
+    loop_control:
+      label: "{{ item.key }}"
